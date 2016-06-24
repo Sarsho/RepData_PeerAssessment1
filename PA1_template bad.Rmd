@@ -3,7 +3,6 @@ title: "PA1_template"
 author: "Austin Overman"
 date: "June 24, 2016"
 output: html_document
-keep_md: yes
 ---
 
 Coursera: Reproducible Research, wk 2 Assignment
@@ -28,7 +27,19 @@ The assignment is to be completed in a single R markdown document that can be pr
 
 ##Solution - Part 1: Loading and preprocessing the data
 To start, a working directory is created to store the downloaded data and unzip the archived file as shown in the code below.
-```{r setAndload, message=FALSE, warning=FALSE, results="hide"}  
+```{r setAndload, message=FALSE, warning=FALSE}  
+## setting up a variable for the original working directory
+owd <- getwd()
+
+## Setting up a data directory under the Working directory based on the 
+## assignment requirements to fork and clone a repo from the instructors 
+## course github account
+if (!file.exists("Activity_Data")) {
+        dir.create("Activity_Data")
+}
+
+setwd("./Activity_Data")
+
 ## setting an internet file path variable and downloading the NEI data set
 ## to the new working directory
 fileUrl <-
@@ -45,7 +56,7 @@ datedownloaded
 
 ## unzipping the entire file
 unzip("activity.zip")
-
+list.files()
 
 ```
   
@@ -101,8 +112,6 @@ step_stats <- steps %>%
 
 
 head(step_stats)
-
-mean.ttl.steps <- mean(step_stats$total, na.rm = TRUE)
 ```
   
 
@@ -110,10 +119,8 @@ Here is a summary of the data. The mean looks low, but it is averaged over all t
 ``` {r summary2, echo=FALSE}
 
 summary(step_stats)
-
 ```
-
-The mean total dailiy steps is `r mean.ttl.steps`.
+  
   
 ####Part B: Make a histogram of the total number of steps taken each day.
 The following code generates a histogram of the daily steps, see Figure 1 below. There are a good deal of days that have zero to 2500 steps.
@@ -167,7 +174,7 @@ ggplot(step_stats_2,
         xlab("Time of Day (24 Hr Clock)") +
         ylab("Average Interval Steps") +
         ggtitle("Figure 2.    
-Average  per Time Interval Daily Steps")
+Total Daily Steps")
 
 ```
   
@@ -290,7 +297,7 @@ ggplot(step_stats_4,
 
 ```{r index2}
 
-
+options(digits=0)
 
 step_stats_5 <- steps_2 %>% 
                 group_by(interval) %>% 
@@ -299,7 +306,6 @@ step_stats_5 <- steps_2 %>%
 
 loc_2 <- which.max(step_stats_5$avg)
 
-options(digits=0)
 max.step_2 <- step_stats_5[loc_2, 3]
 max.int_2 <- step_stats_5[loc_2,1]
 
@@ -346,3 +352,4 @@ ggplot(step_stats_6,
         ggtitle("Figure 5.    
 Average Steps per Daily Interval Comparing Weekdays to the Weekends") +
         facet_grid(day.type ~ .)
+
